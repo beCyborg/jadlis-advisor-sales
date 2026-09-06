@@ -53,7 +53,7 @@ description: |
 ```
 PLUGIN_ROOT = ${CLAUDE_PLUGIN_ROOT}
 MEMORY_DIR  = ${user_config.ADVISORS_MEMORY_DIR}
-OUTPUT_DIR  = {MEMORY_DIR}/Вердикты/Продажи
+OUTPUT_DIR  = {MEMORY_DIR}/Продажи
 CALLS_DIR   = {MEMORY_DIR}/Звонки
 PROFILE     = {MEMORY_DIR}/Профили/adv-sales.md
 RUN_LOG     = {MEMORY_DIR}/Журнал советов.md
