@@ -281,7 +281,8 @@ if (MODE === 'call') {
   const allAnchors = [...new Set(advisorResults.flatMap(r => (r.findings || []).map(f => f.anchor)))].filter(Boolean)
   const anchorAgent = await agent(
     `Один вызов Bash: \`for a in ${allAnchors.map(x => `'${String(x).replace(/[^\[\]A-Za-z0-9]/g, '')}'`).join(' ')}; do grep -qF "$a" "${INPUT_PATH}" || echo "MISSING $a"; done; echo DONE\`. Верни stdout дословно в raw.`,
-    { label: 'anchor-check', phase: 'Cross-verify', schema: RAW_SCHEMA, model: 'haiku', effort: 'low' },
+    // 'opus' + effort:'low': шаг механический (запуск скрипта, stdout дословно), Haiku/Sonnet в этом контуре не используются — решение 06.09.2026.
+    { label: 'anchor-check', phase: 'Cross-verify', schema: RAW_SCHEMA, model: 'opus', effort: 'low' },
   ).catch(() => null)
   const missing = anchorAgent && anchorAgent.raw ? anchorAgent.raw.split('\n').filter(l => l.startsWith('MISSING')).map(l => l.slice(8)) : []
   anchorReport = { checked: allAnchors.length, missing }
