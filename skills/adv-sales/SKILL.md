@@ -10,7 +10,7 @@ allowed-tools:
   - AskUserQuestion
   - Workflow
 model: opus
-effort: xhigh
+effort: high
 description: |
   Совет по продажам «продажник» — 16 советников-слоёв сделки, ЧЕТЫРЕ режима.
   CALL: разбор транскрипта реального звонка (анкоры [Tnn], ≤3 хода на следующий звонок).
