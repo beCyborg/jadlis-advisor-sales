@@ -28,7 +28,7 @@ const SKEPTICS = 3
 const MAX_CLAIMS = 12
 const MAX_MOVES_OUT = MODE === 'call' ? 3 : 3   // жёсткий лимит выхода: ходы/диагнозы
 
-const WORKER_OPTS = A.workerOpts || { agentType: 'advisors:advisor-opus-xhigh' }
+const WORKER_OPTS = A.workerOpts || { agentType: 'advisors:advisor-opus' }
 const w = extra => Object.assign({}, WORKER_OPTS, extra)
 
 const ADVISORS = A.advisors
