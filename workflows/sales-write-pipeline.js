@@ -178,7 +178,7 @@ function deliverPrompt() {
   return `Ты — лёгкий deliver-агент пост-write. Файл результата уже записан: \`${finalPath}\`.
 
 1. Прочитай \`${PLUGIN_ROOT}/shared/memory-write-contract.md\` (Read).
-2. Выполни post-write шаги для \`${finalPath}\`: в т.ч. строку в журнал прогонов \`${outDir}/../../Журнал советов.md\` вида \`- ${today} · adv-sales · WRITE · ${outputName} — <итог одной строкой>\`.
+2. Выполни post-write шаги для \`${finalPath}\`: в т.ч. строку в журнал прогонов \`${outDir}/../Журнал советов.md\` вида \`- ${today} · adv-sales · WRITE · ${outputName} — <итог одной строкой>\`.
 3. Журнала нет — создай его с заголовком \`# Журнал советов\` и допиши строку.
 4. Ничего не удаляй; драфты в \`${workDir}\` оставь.
 
