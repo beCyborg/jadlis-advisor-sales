@@ -1,5 +1,5 @@
 ---
-name: adv-sales
+name: advisor-sales
 user-invocable: true
 argument-hint: "<транскрипт/сделка/артефакт/что написать> (--call / --deal / --verdict / --write)"
 allowed-tools:
@@ -25,7 +25,7 @@ description: |
   Start with No (Camp), Pitch Anything (Klaff), Flip the Script (Klaff),
   The Qualified Sales Leader (McMahon), Selling With (Nasralla), Value-Based Fees (Weiss),
   Resonate (Duarte).
-  Invoke via /advisors:adv-sales.
+  Invoke via /advisor-sales.
   English triggers: review my sales call, call transcript review, deal review, stuck deal,
   deal is stalling, discovery call prep, sales pitch feedback, cold outreach message,
   follow-up email after demo, proposal review, objection handling, negotiate the price,
@@ -36,9 +36,9 @@ description: |
   возражение клиента, переговоры о цене, дожать сделку, квалифицировать сделку,
   совет по продажам, продажник.
   DO NOT TRIGGER when: маркетинговый копирайтинг — лендинг, email-рассылка, VSL,
-  продающий пост (use /advisors:adv-copy); прайсинг продукта, "сколько должен стоить" (use
-  /advisors:adv-product); генерация лидов, откуда брать клиентов, воронка (use /advisors:adv-influence);
-  зарплатные и личные переговоры (use /advisors:adv-Decision); вебинары и продажа со сцены —
+  продающий пост (use /advisor-copywriting); прайсинг продукта, "сколько должен стоить" (use
+  /advisor-product); генерация лидов, откуда брать клиентов, воронка (use /advisor-influence);
+  зарплатные и личные переговоры (use /advisor-decision); вебинары и продажа со сцены —
   контур отложен, вежливый отказ.
 ---
 
@@ -52,7 +52,7 @@ description: |
 
 ```
 PLUGIN_ROOT = ${CLAUDE_PLUGIN_ROOT}
-MEMORY_DIR  = ${user_config.ADVISORS_MEMORY_DIR}
+MEMORY_DIR  = ${user_config.MEMORY_DIR}
 OUTPUT_DIR  = {MEMORY_DIR}/Продажи
 CALLS_DIR   = {MEMORY_DIR}/Звонки
 PROFILE     = {MEMORY_DIR}/Профили/adv-sales.md
@@ -72,9 +72,9 @@ WORK_DIR    = {MEMORY_DIR}/_runs/sales-{РЕЖИМ}-{QUERY_SLUG}
 ## Phase A.0 — гейт памяти (первым, каждый запуск)
 
 1. `MEMORY_DIR` пуст **или** в нём буквально видно `${user_config` → **остановиться**:
-   > Не задана папка памяти советов. Открой `/plugin` → advisors → настройки и укажи
-   > `ADVISORS_MEMORY_DIR` (например `~/advisors-memory`), либо переустанови плагин с
-   > `--config ADVISORS_MEMORY_DIR=<путь>`. Разборы в текущую рабочую папку совет не пишет.
+   > Не задана папка памяти советов. Открой `/plugin` → advisor-sales → настройки и укажи
+   > `MEMORY_DIR` (например `~/advisors-memory`), либо переустанови плагин с
+   > `--config MEMORY_DIR=<путь>`. Разборы в текущую рабочую папку совет не пишет.
 2. Путь начинается с `~/` → заменить `~` на `$HOME` **до любой записи**.
 3. Развернуть скелет — идемпотентно, существующие файлы не трогает; если папка создана
    впервые, сказать об этом и перечислить, что в ней появилось:
@@ -184,7 +184,7 @@ Workflow({ scriptPath: "${CLAUDE_PLUGIN_ROOT}/workflows/council-influence.js",
     userContext: USER_CONTEXT + "\nDEAL_PROFILE: <строка>\nFIT: <множители из гейта>",
     advisors: <VERDICT-подмножество>, quorum: <q>, workDir: WORK_DIR,
     pluginRoot: PLUGIN_ROOT,
-    validatorProtocol: "${CLAUDE_PLUGIN_ROOT}/skills/adv-sales/protocols/validator-protocol.md" } })
+    validatorProtocol: "${CLAUDE_PLUGIN_ROOT}/skills/advisor-sales/protocols/validator-protocol.md" } })
 ```
 
 Валидатор считает по формуле ФАЙЛА протокола (Score × FitMultiplier, кластеры) — в карте
