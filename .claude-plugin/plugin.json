@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "advisor-sales",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Совет по продажам — 16 слоёв сделки",
   "description": "Четыре режима: разбор транскрипта звонка (--call), диагноз застрявшей сделки (--deal), оценка sales-артефакта (--verdict) и конвейер написания (--write). Шестнадцать советников-слоёв сделки по 21 книге, подмножество по типу задачи.",
   "author": {
