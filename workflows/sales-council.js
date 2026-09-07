@@ -28,7 +28,7 @@ const SKEPTICS = 3
 const MAX_CLAIMS = 12
 const MAX_MOVES_OUT = MODE === 'call' ? 3 : 3   // жёсткий лимит выхода: ходы/диагнозы
 
-const WORKER_OPTS = A.workerOpts || { agentType: 'advisors:advisor-opus' }
+const WORKER_OPTS = A.workerOpts || { agentType: 'advisor-sales:advisor-opus' }
 const w = extra => Object.assign({}, WORKER_OPTS, extra)
 
 const ADVISORS = A.advisors
@@ -38,10 +38,10 @@ if (!Array.isArray(ADVISORS) || !ADVISORS.length) {
 if (!INPUT_PATH) throw new Error('args.transcriptPath/briefPath обязателен: вход передаётся путём, не инлайном')
 if (!WORK_DIR) throw new Error('args.workDir обязателен')
 
-const VALIDATOR_PROTOCOL = A.validatorProtocol || `${PLUGIN_ROOT}/skills/adv-sales/protocols/validator-protocol.md`
+const VALIDATOR_PROTOCOL = A.validatorProtocol || `${PLUGIN_ROOT}/skills/advisor-sales/protocols/validator-protocol.md`
 const MODE_PROTOCOL = A.modeProtocol || (MODE === 'call'
-  ? `${PLUGIN_ROOT}/skills/adv-sales/protocols/call-review-protocol.md`
-  : `${PLUGIN_ROOT}/skills/adv-sales/protocols/deal-protocol.md`)
+  ? `${PLUGIN_ROOT}/skills/advisor-sales/protocols/call-review-protocol.md`
+  : `${PLUGIN_ROOT}/skills/advisor-sales/protocols/deal-protocol.md`)
 
 // ── Схемы ──
 const FINDING_ITEMS = MODE === 'call'

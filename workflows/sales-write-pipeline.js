@@ -24,7 +24,7 @@ const WORK_DIR = workDir
 
 // Воркер совета: субагент плагина (Opus, effort high). Оркестратор может передать
 // workerOpts: { model: 'opus' } как фоллбэк, если субагент недоступен.
-const WORKER_OPTS = A.workerOpts || { agentType: 'advisors:advisor-opus' }
+const WORKER_OPTS = A.workerOpts || { agentType: 'advisor-sales:advisor-opus' }
 const w = extra => Object.assign({}, WORKER_OPTS, extra)
 
 // Ростер передаёт скилл (только фактически существующие советники, формат {slug,prefix,book,skillPath}).
