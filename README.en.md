@@ -3,7 +3,7 @@ English · [Русский](README.md)
 # The call ended, and a day later you remember the mood, not the place where it went off the rails
 
 The review runs on a transcript with numbered turns: every finding is pinned to a turn number, and a
-reference to a turn that is not in the transcript is thrown out by a mechanical check before the
+turn number is checked against the transcript file by a plain string search before the
 council ever assembles a verdict.
 
 ```
@@ -27,18 +27,19 @@ This is my workbench published as it is, not a product: whatever I stopped using
 |---|---|---|
 | **What is left of the call.** A general impression is left; the place where the conversation went off the rails cannot be reconstructed from memory. | It reviews your retelling — and therefore the mood you retold it in. | A finding is void without a turn number, and the number is checked against the transcript file by a string search before the verdict is synthesised. |
 | **How many fixes come out of a review.** A checklist produces a long list of corrections, and not one of them reaches the next call. | The list comes out exactly as long as the question pulled it. | No more than three moves come out, each pinned to a moment of the previous call; the rest stays in the timeline instead of in your tasks. |
-| **When to let the deal go.** Nobody names the sign, so the deal gets pushed until pushing turns awkward. | It answers "how do I close this", because that is what was asked. | A move is not released without a disqualification criterion: next to the diagnosis stands the sign of "there is no deal" and the date it gets checked against. |
-| **Whose book you measure by.** You measure by the book you read last — and it always agrees. | It blends the schools into one smooth piece of advice, and whose argument it is cannot be seen. | Sixteen advisors each read their own book separately; agreement inside one school carries no weight, the bonus is only for agreement across clusters. |
+| **When to let the deal go.** Nobody names the sign, so the deal gets pushed until pushing turns awkward. | It answers "how do I close this", because that is what was asked. | A move is not released without a disqualification criterion: next to the diagnosis stands the sign of "there is no deal" and the observable signal you check it by. |
+| **Whose book you measure by.** You measure by the book you read last — and it always agrees. | It blends the schools into one smooth piece of advice, and whose argument it is cannot be seen. | Sixteen advisors each read their own book separately; agreement inside one school counts as an echo, not a confirmation; the bonus is only for agreement across clusters. |
 | **Whose playbook you apply.** Advice from an enterprise deal is driven onto a micro-ticket with a single decision-maker — and stretches the cycle. | It never asks about the size of the ticket or the number of people in the room. | The deal profile is collected up front: an advisor whose context does not match is excluded by name with a reason, the rest get their weight adjusted by a multiplier — and both are printed in the verdict header. |
 
 ## How it works
 
 ![The transcript and the deal profile go into layer advisors, an anchor check and skeptics cut the disputed, and a verdict comes out as a file](docs/img/how-jadlis-advisor-sales.webp)
 
-Going in — a transcript with the speakers marked (or a description of a stalled deal) and the
+Going in — a transcript with the speakers marked — you produce it, not the plugin — (or a
+description of a stalled deal) and the
 profile: kind of sale, size of the ticket, who decides, what you are playing against.
-Inside — the layers read the input separately, a mechanical check throws out references to turns
-that do not exist, a curator picks the disputed claims, and three skeptics go at each of them.
+Inside — the layers read the input separately, every turn number is checked against the transcript
+file by a plain string search, a curator picks the disputed claims, and three skeptics go at each of them.
 Coming out — a verdict as a file in your folder: a timeline with turn numbers, the moves, and the
 sign that tells you the deal is over.
 
