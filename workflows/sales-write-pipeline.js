@@ -223,7 +223,7 @@ phase('Synthesize')
 const FINAL_FIELDS = 'reportPath (строка), finalHook (строка), altHooks (массив строк), techniques (массив строк), status (строка)'
 const synthText = synthPrompt(drafts, critiques)
 const finalDefaultPath = `${outDir}/${outputName}.md`
-const synthCall = agent(synthText, w({ label: 'synth', phase: 'Synthesize', schema: FINAL_SCHEMA }))
+const synthCall = agent(synthText, w({ label: 'synth', phase: 'Synthesize', effort: 'xhigh', schema: FINAL_SCHEMA }))
 const final = (await synthCall.catch(e => {
   log(`synth structured-return не удался (${e && e.message ? e.message : e}) — читай файл из ${finalDefaultPath}`)
   return { reportPath: finalDefaultPath, status: 'written-no-meta' }
@@ -231,7 +231,7 @@ const final = (await synthCall.catch(e => {
 
 // ═══ Phase 4 — Deliver ═══
 phase('Deliver')
-const delivered = await agent(deliverPrompt(), { label: 'deliver', phase: 'Deliver', schema: DELIVER_SCHEMA }).catch(() => null)
+const delivered = await agent(deliverPrompt(), { label: 'deliver', phase: 'Deliver', effort: 'low', schema: DELIVER_SCHEMA }).catch(() => null)
 
 return {
   status: final.status === 'written-no-meta' ? 'written-no-meta' : 'ok',

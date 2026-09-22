@@ -1,2 +1,2 @@
-source jadlis-advisors-source pre-rebuild-2026-09-10-2-g127ff31 127ff31a61bd74a711e27243d9fd98de8a53fa7a
-content-sha256 d5dd75d2b22da02a083c6371275249b7b506309dd3c59fecf92d8515b91983d8
+source jadlis-advisors-source pre-rebuild-2026-09-10-3-g464b3f0 464b3f0f536a02221bdb4140c5d4ad52ef493f3e
+content-sha256 b001907a055284228db2fc4b428e9e6df3279a824ef1473c36cc1ddc2dc37a12
