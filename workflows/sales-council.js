@@ -317,7 +317,7 @@ log(`Ledger: SUPPORTED=${ledgerSummary.supported}, CONTESTED=${ledgerSummary.con
 phase('Synthesize')
 
 const VERDICT_FIELDS = `reportPath (строка), mainThesis (строка), moves (массив строк, не более ${MAX_MOVES_OUT}), lensesSynthesized (целое число)`
-const validatorCall = agent(validatorPrompt(files, claimLedger), w({ label: 'validator', phase: 'Synthesize', schema: VERDICT_SCHEMA }))
+const validatorCall = agent(validatorPrompt(files, claimLedger), w({ label: 'validator', phase: 'Synthesize', effort: 'xhigh', schema: VERDICT_SCHEMA }))
 
 const verdict = (await validatorCall.catch(e => {
   log(`validator structured-return не удался (${e && e.message ? e.message : e}) — вердикт читай из файла`)

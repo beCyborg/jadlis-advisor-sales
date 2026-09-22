@@ -5,6 +5,23 @@
 
 ## [Unreleased]
 
+## [1.0.5] — 2026-09-22 — Effort по ролям / Effort by role
+
+### Для человека
+
+- Вердикт в режимах CALL, DEAL и VERDICT пишет валидатор, а финал в режиме WRITE — синтезатор; оба теперь на повышенном уровне рассуждений `xhigh`. Советники, куратор, скептики, драфты и критики остаются на `high`, анкор-чек — на `low`.
+- Запись файла в режиме WRITE (deliver) идёт на `low` — шаг механический.
+- Почему: исследование Opus 5.5 от 22.09.2026 — прирост `xhigh` измерен на итоговых документах (GDPval +128 Elo) и стоит немного, когда агент один в конце цепочки; на веерах он не окупается, поэтому они остаются на `high`.
+
+### For agents
+
+- Changed: `workflows/sales-council.js` (CALL/DEAL) — `validator` step: `effort: 'xhigh'`.
+- Changed: `workflows/council-influence.js` (VERDICT mode) — `validator` step: `effort: 'xhigh'`.
+- Changed: `workflows/sales-write-pipeline.js` (WRITE) — `synth` step: `effort: 'xhigh'`; `deliver` step (no worker agentType): `effort: 'low'`.
+- Unchanged: advisors, curator, skeptics, drafts, critics (`high`), `anchor-check` (`low`).
+- Migration: none. The per-call `effort` overrides the worker frontmatter `effort: high` and is merged after a caller-supplied `workerOpts`, so it applies in the fallback path too.
+- Refs: Opus 5.5 study 2026-09-22 — `xhigh` gains are measured on final documents (GDPval-AA 1692 → 1820, +128 Elo) and cost little on a single agent at the end of the chain; fan-outs stay `high`.
+
 ## [1.0.4] — 2026-09-22 — Переход на Opus 5.5 / Switch to Opus 5.5
 
 ### Для человека
