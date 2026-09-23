@@ -69,6 +69,15 @@ WORK_DIR    = {MEMORY_DIR}/_runs/sales-{РЕЖИМ}-{QUERY_SLUG}
 `{MEMORY_DIR}`: подстановка `${CLAUDE_PLUGIN_ROOT}` и `${user_config.*}` в читаемые файлы не
 доходит. Подставляй значения сам; литеральный `{PLUGIN_ROOT}` в Read не отправляй.
 
+## Run contract
+
+- **Done when:** the mode's result is shown — VERDICT: the verdict copied to `{OUTPUT_DIR}/<русское имя>.md` with the ledger; WRITE: `{OUTPUT_DIR}/{outputName}.md` written by the pipeline (`test -s` passes); CALL/DEAL: the verdict from `reportPath`, with every save offer answered and only confirmed items written (verdict → `{OUTPUT_DIR}`, redacted transcript → `{CALLS_DIR}`, moves → Playbook) — then `{WORK_DIR}` is removed (CALL/DEAL/VERDICT), one line `- YYYY-MM-DD · adv-sales · {режим} · {имя файла} — …` is appended to `{RUN_LOG}` and a session-log entry to `{PROFILE}`. A micro-request (Phase A, step 6) is done once answered from one lens; N_built < 4 is done once the standalone advisor is offered.
+- **Keep going vs. stop:** a step inside this skill's scope that needs no input from the user — do it, don't announce it and stop. Never end a turn on a status line, a recap naming the next step, or an offer to continue («Сделать?», «Продолжить?»). Stop only when you cannot continue without the user, or before anything risky (delete, send outward, payments, secrets).
+- This skill's own confirm steps override "keep going": the Phase A.0 stop when `MEMORY_DIR` is unset, the mode question when the request is ambiguous, the deal-profile gate (Phase A, step 3), the WRITE brief interview (`protocols/brief-protocol.md`), and every write the skill puts behind confirmation — verdict/transcript/Playbook saves in CALL, the swipe-file hook in WRITE, Profile and Playbook edits. Default-accept applies only where the skill already allows it (Profile in memory covers the deal-profile gate → skip it, saying so aloud).
+- **Subagent results:** in CALL/DEAL/VERDICT the council's per-claim cross-verification (skeptics' ledger) is the check; before presenting, spot-check one SUPPORTED claim — its `[Tnn]` anchor in `{WORK_DIR}/transcript.md` (CALL) or its citation tag in the lens's `references/`. WRITE has no ledger: open the final file and check 1–2 citation tags against the cited lens's `references/`; tags you did not check are labelled «не проверено».
+- **Progress file:** a run longer than 10 steps, or one with user answers between steps (the deal-profile gate always adds them), keeps a `- [ ]` checklist in `{WORK_DIR}/progress.md`, ticked as it goes; after a pause or context compaction, re-read it and continue from the first unticked item. It goes away with `{WORK_DIR}` and is never saved to `{OUTPUT_DIR}` or `{CALLS_DIR}`.
+- **Final report:** result (verdict or final text + path) → «Не удалось подтвердить» (what, and where it was looked for) → **От тебя:** on its own line, only when the user must do or decide something.
+
 ## Phase A.0 — гейт памяти (первым, каждый запуск)
 
 1. `MEMORY_DIR` пуст **или** в нём буквально видно `${user_config` → **остановиться**:
