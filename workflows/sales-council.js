@@ -67,6 +67,23 @@ const MAX_MOVES_OUT = MODE === 'call' ? 3 : 3   // жёсткий лимит в�
 const WORKER_OPTS = A.workerOpts || { agentType: 'advisor-sales:advisor-opus' }
 const w = extra => Object.assign({}, WORKER_OPTS, extra)
 
+// Final agent (2026-11-09): args.finalOpts {model, effort} — the skill reads them from the PERSONAL file
+// ~/.claude/skills/_shared/final-agent.json (scripts/final-agent.py). Without it the final agent keeps the
+// default: the worker (Opus 5.5) at effort xhigh. On finalOpts an empty answer or a throw → ONE retry on the
+// default, so a classifier stop or an unavailable model on the override never costs the verdict.
+const FINAL_OPTS = (A.finalOpts && typeof A.finalOpts === 'object' && /^claude-[a-z0-9-]+$/.test(String(A.finalOpts.model || '')) &&
+  ['low', 'medium', 'high', 'xhigh', 'max'].includes(A.finalOpts.effort)) ? { model: A.finalOpts.model, effort: A.finalOpts.effort } : null
+async function finalAgent(prompt, extra) {
+  if (!FINAL_OPTS) return agent(prompt, w(extra))
+  const first = await agent(prompt, w(Object.assign({}, extra, FINAL_OPTS))).catch(e => {
+    log(`${extra.label} (${FINAL_OPTS.model}) упал: ${String((e && e.message) || e).slice(0, 200)}`)
+    return null
+  })
+  if (first) return first
+  log(`${extra.label} на ${FINAL_OPTS.model} не ответил — один повтор на умолчании (Opus 5.5 · ${extra.effort}).`)
+  return agent(prompt, w(Object.assign({}, extra, { label: `${extra.label}→opus-retry` })))
+}
+
 const ADVISORS = A.advisors
 if (!Array.isArray(ADVISORS) || !ADVISORS.length) {
   throw new Error('args.advisors пуст: режимное подмножество ростера передаёт скилл adv-sales (routing-matrix + deal-profile-gate)')
@@ -317,8 +334,9 @@ if (MODE === 'call') {
   const allAnchors = [...new Set(advisorResults.flatMap(r => (r.findings || []).map(f => f.anchor)))].filter(Boolean)
   const anchorAgent = await agent(
     `Один вызов Bash: \`for a in ${allAnchors.map(x => `'${String(x).replace(/[^\[\]A-Za-z0-9]/g, '')}'`).join(' ')}; do grep -qF "$a" "${INPUT_PATH}" || echo "MISSING $a"; done; echo DONE\`. Верни stdout дословно в raw.`,
-    // 'claude-opus-5-5' + effort:'low': шаг механический (запуск скрипта, stdout дословно), Haiku/Sonnet в этом контуре не используются — решение 06.09.2026.
-    { label: 'anchor-check', phase: 'Cross-verify', schema: RAW_SCHEMA, model: 'claude-opus-5-5', effort: 'low' },
+    // 'claude-opus-5-5' + effort medium: шаг механический (запуск скрипта, stdout дословно), Haiku/Sonnet в этом контуре не используются — решение 06.09.2026;
+    // medium вместо прежнего low — правило владельца с 09.11.2026: ни один шаг конвейера не ниже medium.
+    { label: 'anchor-check', phase: 'Cross-verify', schema: RAW_SCHEMA, model: 'claude-opus-5-5', effort: 'medium' },
   ).catch(() => null)
   const missing = anchorAgent && anchorAgent.raw ? anchorAgent.raw.split('\n').filter(l => l.startsWith('MISSING')).map(l => l.slice(8)) : []
   anchorReport = { checked: allAnchors.length, missing }
@@ -353,7 +371,7 @@ log(`Ledger: SUPPORTED=${ledgerSummary.supported}, CONTESTED=${ledgerSummary.con
 phase('Synthesize')
 
 const VERDICT_FIELDS = `reportPath (строка), mainThesis (строка), moves (массив строк, не более ${MAX_MOVES_OUT}), lensesSynthesized (целое число)`
-const validatorCall = agent(validatorPrompt(files, claimLedger), w({ label: 'validator', phase: 'Synthesize', effort: 'xhigh', schema: VERDICT_SCHEMA }))
+const validatorCall = finalAgent(validatorPrompt(files, claimLedger), { label: 'validator', phase: 'Synthesize', effort: 'xhigh', schema: VERDICT_SCHEMA })
 
 const verdict = (await validatorCall.catch(e => {
   log(`validator structured-return не удался (${e && e.message ? e.message : e}) — вердикт читай из файла`)

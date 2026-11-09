@@ -9,8 +9,6 @@ allowed-tools:
   - Bash
   - AskUserQuestion
   - Workflow
-model: claude-opus-5-5
-effort: high
 description: |
   Совет по продажам «продажник» — 16 советников-слоёв сделки, ЧЕТЫРЕ режима.
   CALL: разбор транскрипта реального звонка (анкоры [Tnn], ≤3 хода на следующий звонок).
@@ -155,6 +153,14 @@ WORK_DIR удаляется целиком (retention-политика: ниче
    (`${CLAUDE_PLUGIN_ROOT}/lenses/advisor-blount-objections`, `…/advisor-voss`, …) и ответь
    сам, совет не созывай.
 
+**Финальный агент (личный файл).** Перед запуском движка выполни
+`python3 "${CLAUDE_PLUGIN_ROOT}/scripts/final-agent.py"` и возьми поле `finalOpts` как `FINAL_OPTS`
+(`{model, effort}` или `null`). Файл `~/.claude/skills/_shared/final-agent.json` необязательный и личный;
+`null` → финальный агент движка на умолчании (Opus 5.5 · xhigh). Скажи одной строкой: «Финальный агент:
+claude-fable-5-2 · high (final-agent.json)» или «Финальный агент: по умолчанию, Opus 5.5 · xhigh
+(final-agent.json: <reason>)». `FINAL_OPTS` уходит в args каждого движка ниже, кроме
+`council-question-harvest.js`; пустой ответ на нём — один повтор на умолчании внутри движка.
+
 ## CALL — разбор звонка
 
 Phase A: нормализация транскрипта по `protocols/call-review-protocol.md` →
@@ -167,7 +173,7 @@ Workflow({ scriptPath: "${CLAUDE_PLUGIN_ROOT}/workflows/sales-council.js",
     query: "<цель звонка + какой по счёту + контекст>", dealProfile: "<DEAL_PROFILE строкой>",
     userContext: USER_CONTEXT, advisors: <CALL-подмножество: gap, spin, khalsa,
       blount-objections, jolt, story; +voss при живых переговорах цены; +qsl при mid/high+комитет>,
-    quorum: <q>, workDir: WORK_DIR, pluginRoot: PLUGIN_ROOT } })
+    quorum: <q>, workDir: WORK_DIR, pluginRoot: PLUGIN_ROOT, finalOpts: FINAL_OPTS } })
 ```
 
 Дождись `<task-notification>`. Источник истины — файл reportPath (не verdictMeta).
@@ -180,7 +186,7 @@ Workflow({ scriptPath: "${CLAUDE_PLUGIN_ROOT}/workflows/sales-council.js",
 
 Интейк по deal-profile-gate (оба экрана; «не знаю» = диагноз, идёт в вердикт) → бриф
 сделки в `{WORK_DIR}/deal-brief.md` (симптом, сколько висит, кто в решении, против кого,
-история касаний) → тот же `sales-council.js` с `mode:'deal', briefPath:...`;
+история касаний) → тот же `sales-council.js` с `mode:'deal', briefPath:..., finalOpts: FINAL_OPTS`;
 ростер 3–6 по симптому — таблица в `protocols/deal-protocol.md`. Каждый диагноз вердикта
 несёт четвёрку «диагноз → ход → сигнал → критерий дисквала» и дедлайн решения.
 
@@ -196,7 +202,8 @@ Workflow({ scriptPath: "${CLAUDE_PLUGIN_ROOT}/workflows/council-influence.js",
     userContext: USER_CONTEXT + "\nDEAL_PROFILE: <строка>\nFIT: <множители из гейта>",
     advisors: <VERDICT-подмножество>, quorum: <q>, workDir: WORK_DIR,
     pluginRoot: PLUGIN_ROOT,
-    validatorProtocol: "${CLAUDE_PLUGIN_ROOT}/skills/advisor-sales/protocols/validator-protocol.md" } })
+    validatorProtocol: "${CLAUDE_PLUGIN_ROOT}/skills/advisor-sales/protocols/validator-protocol.md",
+    finalOpts: FINAL_OPTS } })
 ```
 
 Валидатор считает по формуле ФАЙЛА протокола (Score × FitMultiplier, кластеры) — в карте
@@ -214,7 +221,7 @@ call-script / pitch-deck; dealProfile обязателен; дословные �
 Workflow({ scriptPath: "${CLAUDE_PLUGIN_ROOT}/workflows/sales-write-pipeline.js",
   args: { brief: <по контракту brief-protocol>, outputName: <имя без .md>,
     today: "<date +%F>", advisors: <существующие из ростера>,
-    outDir: OUTPUT_DIR, workDir: WORK_DIR, pluginRoot: PLUGIN_ROOT } })
+    outDir: OUTPUT_DIR, workDir: WORK_DIR, pluginRoot: PLUGIN_ROOT, finalOpts: FINAL_OPTS } })
 ```
 
 Результат — `{OUTPUT_DIR}/{outputName}.md` (финал + альтернативные крючки + приёмы с тегами +
